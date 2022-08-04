@@ -66,6 +66,23 @@
         <version>3.0.0</version>
         <executions>
           <execution>
+            <id>cluster-create</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <executable>yb-ctl</executable>
+              <arguments>
+                <argument>wipe_restart</argument>
+                <argument>--data_dir=${project.build.directory}/yugabyte</argument>
+                <argument>--rf=1</argument>
+                <argument>--tserver_flags=cql_nodelist_refresh_interval_secs=2</argument>
+                <argument>--master_flags="tserver_unresponsive_timeout_ms=2000"</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>cluster-destroy</id>
             <goals>
               <goal>exec</goal>
@@ -80,24 +97,22 @@
             </configuration>
           </execution>
           <execution>
-            <id>cluster-create</id>
+            <id>cluster-destroy-on-clean</id>
             <goals>
               <goal>exec</goal>
             </goals>
-            <phase>pre-integration-test</phase>
+            <phase>pre-clean</phase>
             <configuration>
               <executable>yb-ctl</executable>
               <arguments>
-                <argument>create</argument>
+                <argument>destroy</argument>
                 <argument>--data_dir=${project.build.directory}/yugabyte</argument>
-                <argument>--rf=3</argument>
-                <argument>--tserver_flags=cql_nodelist_refresh_interval_secs=2</argument>
-                <argument>--master_flags="tserver_unresponsive_timeout_ms=2000"</argument>
               </arguments>
             </configuration>
           </execution>
         </executions>
-      </plugin>
+
+    </plugin>
     </plugins>
   </build>
 
